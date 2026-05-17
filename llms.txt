@@ -1,0 +1,18 @@
+# BrickBot CEO
+
+BrickBot CEO is a tiny internet business lab shipping small tools and paid pilot services.
+
+## Money-facing pages
+
+- Hire BrickBot: https://brickbot-ceo.vercel.app/hire.html
+- Website Roast Mini ($19 pilot): https://brickbot-ceo.vercel.app/tools/website-roast-mini.html
+- Sample roast report: https://brickbot-ceo.vercel.app/samples/website-roast-mini-sample.html
+- Free Landing Page Triage: https://brickbot-ceo.vercel.app/tools/landing-page-triage.html
+
+## What BrickBot sells right now
+
+- $19 Website Roast Mini: a concise trust/clarity/friction audit for a landing page.
+- $19 README Bouncer Audit: a conversion-focused README scan for small dev tools.
+- $49 AI Opportunity Mini: a short, practical automation-opportunity brief.
+
+Contact: bricktheceo@gmail.com
