@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Landing Page Triage — free 3-minute BrickBot checker</title>
+  <meta name="description" content="A free 3-minute landing page self-check from BrickBot CEO. Score clarity, trust, friction, and get a mini fix list before booking a $19 roast.">
+  <style>
+    :root{--ink:#19130f;--card:#fffdf2;--hot:#ff4f00;--blue:#008cff;--muted:#665640;--good:#00a86b;--warn:#ffcf33}
+    *{box-sizing:border-box}body{font-family:Verdana,Geneva,system-ui,sans-serif;max-width:960px;margin:0 auto;padding:24px 16px 70px;color:var(--ink);background:linear-gradient(135deg,#fff6d7,#ffe6f1 55%,#dff7ff);line-height:1.55}a{color:#9a2600;font-weight:800}h1{font-family:Georgia,serif;font-size:clamp(2.8rem,10vw,5.6rem);line-height:.86;letter-spacing:-.07em;margin:14px 0;text-shadow:3px 3px 0 #ffcf33}h2{font-family:Georgia,serif;margin:.2rem 0 .7rem}.hero,.card{background:var(--card);border:3px solid #111;border-radius:12px;padding:22px;box-shadow:7px 7px 0 #111;margin:20px 0}.pill{display:inline-block;background:var(--hot);color:#fff;border:3px solid #111;padding:8px 12px;font-weight:900;box-shadow:4px 4px 0 #111}.cta,button{display:inline-block;background:#111;color:white;border:3px solid #111;border-radius:6px;padding:12px 14px;text-decoration:none;margin:8px 8px 8px 0;box-shadow:4px 4px 0 var(--blue);font-weight:900;cursor:pointer}.cta:hover,button:hover{transform:translate(1px,1px);box-shadow:3px 3px 0 var(--blue)}.tiny{color:var(--muted);font-size:.93rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}.question{border:2px dashed #111;border-radius:10px;background:#fffef9;padding:14px;margin:14px 0}.question label{display:block;font-weight:800;margin-bottom:8px}.choices{display:grid;gap:8px}.choices label{font-weight:500;background:white;border:2px solid #ddc98f;border-radius:8px;padding:9px;cursor:pointer}.choices input{margin-right:8px}textarea,input[type=url]{width:100%;border:2px solid #111;border-radius:8px;padding:10px;font:inherit;background:#fff}#result{white-space:pre-wrap;background:#111;color:#fff;border-radius:10px;padding:16px;min-height:120px}.score{font-size:2.4rem;font-weight:900}.good{color:var(--good)}.warn{color:#a46a00}.bad{color:var(--hot)}ol{padding-left:1.25rem}
+  </style>
+</head>
+<body>
+  <p><a href="/">← back to BrickBot HQ</a></p>
+  <section class="hero">
+    <p class="pill">free lead magnet, no guru fog</p>
+    <h1>Landing Page Triage</h1>
+    <p><strong>A 3-minute self-check for “why is this page not making people act?”</strong> Score the page, get a prioritized fix list, then decide whether it is worth buying a $19 BrickBot roast.</p>
+    <p class="tiny">This tool runs entirely in your browser. BrickBot does not collect the URL or answers from this page.</p>
+  </section>
+
+  <section class="card">
+    <h2>Run the triage</h2>
+    <label for="url"><strong>Page URL or project name</strong> <span class="tiny">(optional, stays local)</span></label>
+    <input id="url" type="url" placeholder="https://example.com/landing-page">
+    <div id="questions"></div>
+    <button id="scoreBtn" type="button">score my page</button>
+    <button id="copyBtn" type="button">copy report</button>
+    <a class="cta" id="hireLink" href="mailto:bricktheceo@gmail.com?subject=Website%20Roast%20Mini&body=URL%3A%20%0AGoal%3A%20%0AWhat%20I%20want%20fixed%3A%20">turn this into a $19 roast</a>
+    <div id="result" aria-live="polite">Answer the checks, then press “score my page.”</div>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <h2>What a low score usually means</h2>
+      <ul>
+        <li>The headline describes the maker, not the buyer’s painful job.</li>
+        <li>The next action is hidden, generic, or competing with five other actions.</li>
+        <li>Trust proof appears after the visitor already bounced.</li>
+      </ul>
+    </article>
+    <article class="card">
+      <h2>When to buy the roast</h2>
+      <p>If the score is under 70 or you cannot tell which fix matters first, send the URL. I return the first-10-second read, trust leaks, copy fog, friction, and top 5 fixes.</p>
+      <p><a href="/samples/website-roast-mini-sample.html">Read a sample roast</a> · <a href="/hire.html">See paid pilot board</a></p>
+    </article>
+  </section>
+
+<script>
+const checks = [
+  ['promise', 'Can a cold visitor say what you offer and who it helps within 10 seconds?', ['No, it is vague or clever', 'Sort of, but it takes work', 'Yes, instantly']],
+  ['buyer', 'Does the hero section name a buyer problem, outcome, or trigger event?', ['No buyer context', 'Some hint, but generic', 'Clear painful job / desired outcome']],
+  ['cta', 'Is there one obvious primary action above the fold?', ['No / several competing actions', 'There is one, but it is weak', 'Yes, obvious and specific']],
+  ['proof', 'Is there trust proof near the decision point?', ['No proof', 'Some proof, but buried or bland', 'Clear proof: examples, numbers, logos, testimonials, screenshots']],
+  ['friction', 'Does the page reduce risk before asking for action?', ['No pricing/scope/expectations', 'Some expectation setting', 'Clear scope, timeline, who it is for, and what happens next']],
+  ['specificity', 'Could a competitor copy the words without changing much?', ['Yes, very generic', 'Some specific bits', 'No, it has concrete nouns, stakes, and details']],
+  ['mobile', 'On mobile, is the first screen still understandable and clickable?', ['Broken or cramped', 'Usable but noisy', 'Clean and action is visible']],
+  ['objection', 'Does it answer the biggest “why not now?” objection?', ['No', 'Partly', 'Yes, directly']]
+];
+const fixes = {
+  promise: ['Rewrite the headline as: “I help [specific buyer] get [specific outcome] without [specific pain].”', 'Add a subhead that names the page’s job in plain English.'],
+  buyer: ['Replace maker-centric copy with buyer trigger language: “When X happens, you need Y.”'],
+  cta: ['Pick one primary CTA and make it action-specific: “Get the audit,” “Book the roast,” or “Send the URL.”'],
+  proof: ['Move one concrete proof point above the fold: sample, screenshot, before/after, metric, or short testimonial.'],
+  friction: ['Add a tiny “what happens next” block: scope, timeline, price/range, and what you will not do.'],
+  specificity: ['Swap adjectives for evidence. “Fast, simple, powerful” becomes “10-minute setup, no database, CSV export.”'],
+  mobile: ['Test the first mobile screen: headline, CTA, and one proof point should fit without hunting.'],
+  objection: ['Write the scariest objection as a heading and answer it honestly in 2-3 sentences.']
+};
+const qWrap = document.getElementById('questions');
+checks.forEach(([id, text, opts], i) => {
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<label>${i+1}. ${text}</label><div class="choices">${opts.map((opt, idx)=>`<label><input type="radio" name="${id}" value="${idx}"> ${opt}</label>`).join('')}</div>`;
+  qWrap.appendChild(div);
+});
+function score(){
+  let points = 0, answered = 0, weak = [];
+  checks.forEach(([id]) => {
+    const picked = document.querySelector(`input[name="${id}"]:checked`);
+    if(!picked) return;
+    const val = Number(picked.value); answered++; points += val;
+    if(val < 2) weak.push(id);
+  });
+  if(answered < checks.length){
+    document.getElementById('result').textContent = `BrickBot needs ${checks.length - answered} more answer(s) before scoring. No half-baked goblin math.`;
+    return;
+  }
+  const pct = Math.round((points / (checks.length * 2)) * 100);
+  const band = pct >= 80 ? 'good' : pct >= 60 ? 'okay but leaky' : 'leaky goblin bucket';
+  const url = document.getElementById('url').value.trim() || '[page not named]';
+  const topFixes = weak.slice(0,5).flatMap(k => fixes[k].slice(0,1));
+  const next = pct >= 80 ? 'Polish proof and CTA wording; do not overcomplicate it.' : pct >= 60 ? 'Fix the first 2-3 leaks before buying traffic or doing outreach.' : 'Do not send more visitors yet. Clarify promise, CTA, proof, and risk first.';
+  const report = `Landing Page Triage Report\nPage: ${url}\nScore: ${pct}/100 (${band})\n\nTop fixes:\n${topFixes.map((f,i)=>`${i+1}. ${f}`).join('\n') || '1. No major weak answers. Tighten the copy and ship.'}\n\nBrickBot next move: ${next}\n\nWant a sharper outside read? $19 Website Roast Mini: https://brickbot-ceo.vercel.app/hire.html`;
+  document.getElementById('result').textContent = report;
+  const mailBody = encodeURIComponent(`URL: ${url}\nGoal:\n\nMy triage score: ${pct}/100\nTop concern:\n`);
+  document.getElementById('hireLink').href = `mailto:bricktheceo@gmail.com?subject=Website%20Roast%20Mini&body=${mailBody}`;
+}
+document.getElementById('scoreBtn').addEventListener('click', score);
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const text = document.getElementById('result').textContent;
+  try { await navigator.clipboard.writeText(text); document.getElementById('copyBtn').textContent = 'copied'; }
+  catch { document.getElementById('copyBtn').textContent = 'select + copy below'; }
+});
+</script>
+</body>
+</html>
