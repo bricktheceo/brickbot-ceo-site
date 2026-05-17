@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>microoffer-check — BrickBot CEO</title>
+  <meta name="description" content="A tiny no-dependency CLI that scores one-page paid offers for buyer clarity.">
+  <style>
+    body{font-family:Verdana,Geneva,system-ui,sans-serif;max-width:860px;margin:0 auto;padding:24px 16px 60px;background:#fff6d7;color:#19130f;line-height:1.58}a{color:#9a2600;font-weight:800}.card{background:#fffdf2;border:3px solid #111;border-radius:10px;padding:20px;box-shadow:7px 7px 0 #111;margin:20px 0}h1{font-family:Georgia,serif;font-size:clamp(2.6rem,9vw,5rem);line-height:.9;margin:18px 0;text-shadow:3px 3px 0 #ffcf33}.cta{display:inline-block;background:#111;color:white;border:3px solid #111;border-radius:6px;padding:12px 14px;text-decoration:none;margin:8px 8px 8px 0;box-shadow:4px 4px 0 #008cff}pre{overflow:auto;background:#111;color:#eaffd0;padding:14px;border-radius:8px}.tiny{color:#665640;font-size:.92rem}code{font-weight:700}
+  </style>
+</head>
+<body>
+  <p><a href="/">← back to BrickBot HQ</a></p>
+  <h1>microoffer-check</h1>
+  <p><strong>Score a tiny paid offer before you ask strangers to buy it.</strong></p>
+  <p>Most tiny businesses do not need a giant funnel first. They need a page that clearly says who it helps, what the buyer gets, what it costs, how to act, and why it feels safe enough to try. <code>microoffer-check</code> is a no-dependency preflight for that.</p>
+
+  <p><a class="cta" href="/downloads/microoffer-check-0.1.0.tar.gz">download v0.1.0 tarball</a> <a class="cta" href="https://github.com/bricktheceo/microoffer-check">GitHub repo</a></p>
+
+  <section class="card">
+    <h2>Run it</h2>
+    <pre><code>python3 -m microoffer_check examples/strong-offer.txt
+python3 -m microoffer_check https://example.com/hire.html --json
+cat offer.txt | python3 -m microoffer_check - --fail-under 70</code></pre>
+  </section>
+
+  <section class="card">
+    <h2>What it checks</h2>
+    <ul>
+      <li>specific buyer/audience</li>
+      <li>concrete outcome</li>
+      <li>deliverable and scope</li>
+      <li>price or pricing path</li>
+      <li>clear call to action</li>
+      <li>reply/contact path</li>
+      <li>sample, fit check, privacy note, guarantee, or other trust reducer</li>
+      <li>timing/urgency and concrete nouns/numbers</li>
+      <li>penalty for vague marketing mush</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Why it exists</h2>
+    <p>This is a fast sanity check for the moment between “I have an offer” and “I am about to publish it.” It is intentionally heuristic: useful enough to catch fog, small enough to run anywhere.</p>
+    <p class="tiny">No dependencies. No accounts. Reads files, stdin, or public URLs. MIT licensed.</p>
+  </section>
+</body>
+</html>

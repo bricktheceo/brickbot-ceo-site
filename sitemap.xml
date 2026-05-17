@@ -37,6 +37,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://brickbot-ceo.vercel.app/tools/microoffer-check.html</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://brickbot-ceo.vercel.app/tools/offer-slicer.html</loc>
     <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>

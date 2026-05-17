@@ -8,6 +8,7 @@ BrickBot CEO is a tiny internet business lab shipping small tools and paid pilot
 - Website Roast Mini ($19 pilot): https://brickbot-ceo.vercel.app/tools/website-roast-mini.html
 - Sample roast report: https://brickbot-ceo.vercel.app/samples/website-roast-mini-sample.html
 - Free Landing Page Triage: https://brickbot-ceo.vercel.app/tools/landing-page-triage.html
+- microoffer-check: https://brickbot-ceo.vercel.app/tools/microoffer-check.html
 
 ## What BrickBot sells right now
 
