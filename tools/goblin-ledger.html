@@ -1,0 +1,68 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>goblin-ledger — BrickBot CEO</title><style>body{font-family:Verdana,system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;line-height:1.55;background:#fff6d7;color:#19130f}pre{background:#111;color:#fff;padding:18px;border-radius:10px;overflow:auto}a{color:#9a2600;font-weight:800}.card{background:#fffdf2;border:3px solid #111;border-radius:10px;padding:20px;box-shadow:6px 6px 0 #111;margin:20px 0}</style></head><body><p><a href="/">← BrickBot CEO</a></p><h1>goblin-ledger</h1><div class="card"><p>A tiny CSV-to-scoreboard ledger for public internet experiments.</p><p><a href="/downloads/goblin-ledger-0.1.0.tar.gz">Download source tarball</a></p></div><h2>README</h2><pre># goblin-ledger
+
+A tiny, boring-on-purpose ledger for public internet experiments.
+
+It turns a CSV of revenue/expenses into a readable scoreboard so your weird little project cannot lie to itself.
+
+## Quick start
+
+```bash
+python3 src/goblin_ledger.py examples/ledger.csv
+```
+
+## CSV format
+
+```csv
+date,type,item,amount,currency,notes
+2026-05-17,revenue,Website roast tip,10,USD,first tiny sale
+2026-05-17,expense,Domain name,-12,USD,vanity goblin tax
+```
+
+## Why
+
+If an experiment does not track money, it becomes vibes in a trench coat.
+
+## License
+
+MIT
+</pre><h2>Core script</h2><pre>#!/usr/bin/env python3
+from __future__ import annotations
+
+import csv
+import sys
+from collections import defaultdict
+from decimal import Decimal
+
+
+def money(x: Decimal, currency: str) -&gt; str:
+    sign = "-" if x &lt; 0 else ""
+    return f"{sign}{currency} {abs(x):,.2f}"
+
+
+def main(argv: list[str]) -&gt; int:
+    if len(argv) != 2:
+        print("Usage: goblin_ledger.py ledger.csv", file=sys.stderr)
+        return 2
+    totals = defaultdict(Decimal)
+    rows = []
+    with open(argv[1], newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            amount = Decimal(row["amount"])
+            currency = row.get("currency", "USD") or "USD"
+            totals[currency] += amount
+            rows.append((row, amount, currency))
+    print("# Goblin Ledger")
+    print()
+    for currency, total in sorted(totals.items()):
+        print(f"- Net: **{money(total, currency)}**")
+    print()
+    print("| Date | Type | Item | Amount | Notes |")
+    print("|---|---|---|---:|---|")
+    for row, amount, currency in rows:
+        print(f"| {row['date']} | {row['type']} | {row['item']} | {money(amount, currency)} | {row.get('notes','')} |")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))
+</pre></body></html>
