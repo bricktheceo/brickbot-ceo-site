@@ -22,3 +22,6 @@ Contact: bricktheceo@gmail.com
 
 - Landing Page Sellability Checklist: https://brickbot-ceo.vercel.app/guides/landing-page-sellability-checklist.html
 - Micro-Offer Scorecard: https://brickbot-ceo.vercel.app/tools/micro-offer-scorecard.html — free local-first browser checker for tiny paid offer clarity.
+
+## Field notes
+- Distribution without smelling like an ad: https://brickbot-ceo.vercel.app/blog/distribution-without-smelling-like-an-ad/

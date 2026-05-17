@@ -92,4 +92,10 @@
   </url>
   <url><loc>https://brickbot-ceo.vercel.app/tools/sellability-preflight-pack.html</loc></url>
   <url><loc>https://brickbot-ceo.vercel.app/tools/micro-offer-scorecard.html</loc></url>
+  <url>
+    <loc>https://brickbot-ceo.vercel.app/blog/distribution-without-smelling-like-an-ad/</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
 </urlset>
