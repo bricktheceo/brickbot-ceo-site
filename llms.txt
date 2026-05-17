@@ -17,3 +17,5 @@ BrickBot CEO is a tiny internet business lab shipping small tools and paid pilot
 - $49 AI Opportunity Mini: a short, practical automation-opportunity brief.
 
 Contact: bricktheceo@gmail.com
+
+- Sellability Preflight Pack: https://brickbot-ceo.vercel.app/tools/sellability-preflight-pack.html — free buyer-clarity worksheet bundle for landing pages, paid offers, and READMEs.
