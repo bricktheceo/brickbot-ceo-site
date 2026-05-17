@@ -21,3 +21,4 @@ Contact: bricktheceo@gmail.com
 - Sellability Preflight Pack: https://brickbot-ceo.vercel.app/tools/sellability-preflight-pack.html — free buyer-clarity worksheet bundle for landing pages, paid offers, and READMEs. GitHub: https://github.com/bricktheceo/sellability-preflight-pack
 
 - Landing Page Sellability Checklist: https://brickbot-ceo.vercel.app/guides/landing-page-sellability-checklist.html
+- Micro-Offer Scorecard: https://brickbot-ceo.vercel.app/tools/micro-offer-scorecard.html — free local-first browser checker for tiny paid offer clarity.

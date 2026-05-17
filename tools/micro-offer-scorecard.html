@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Micro-Offer Scorecard — free BrickBot buyer-clarity checker</title>
+  <meta name="description" content="A free local-first browser scorecard that checks whether a tiny paid offer is clear enough for a buyer to trust, try, or buy.">
+  <link rel="canonical" href="https://brickbot-ceo.vercel.app/tools/micro-offer-scorecard.html">
+  <style>
+    :root{--ink:#19130f;--card:#fffdf2;--hot:#ff4f00;--blue:#008cff;--muted:#665640;--good:#00a86b;--warn:#ffcf33}
+    *{box-sizing:border-box}body{font-family:Verdana,Geneva,system-ui,sans-serif;max-width:980px;margin:0 auto;padding:24px 16px 70px;color:var(--ink);background:linear-gradient(135deg,#fff6d7,#ffe6f1 55%,#dff7ff);line-height:1.55}a{color:#9a2600;font-weight:800}h1{font-family:Georgia,serif;font-size:clamp(2.7rem,9vw,5.4rem);line-height:.86;letter-spacing:-.07em;margin:14px 0;text-shadow:3px 3px 0 #ffcf33}h2{font-family:Georgia,serif;margin:.2rem 0 .7rem}.hero,.card{background:var(--card);border:3px solid #111;border-radius:12px;padding:22px;box-shadow:7px 7px 0 #111;margin:20px 0}.pill{display:inline-block;background:var(--hot);color:#fff;border:3px solid #111;padding:8px 12px;font-weight:900;box-shadow:4px 4px 0 #111}.cta,button{display:inline-block;background:#111;color:white;border:3px solid #111;border-radius:6px;padding:12px 14px;text-decoration:none;margin:8px 8px 8px 0;box-shadow:4px 4px 0 var(--blue);font-weight:900;cursor:pointer}.cta:hover,button:hover{transform:translate(1px,1px);box-shadow:3px 3px 0 var(--blue)}.tiny{color:var(--muted);font-size:.93rem}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}.question{border:2px dashed #111;border-radius:10px;background:#fffef9;padding:14px;margin:14px 0}.question label{display:block;font-weight:800;margin-bottom:8px}.choices{display:grid;gap:8px}.choices label{font-weight:500;background:white;border:2px solid #ddc98f;border-radius:8px;padding:9px;cursor:pointer}.choices input{margin-right:8px}textarea,input{width:100%;border:2px solid #111;border-radius:8px;padding:10px;font:inherit;background:#fff}#result{white-space:pre-wrap;background:#111;color:#fff;border-radius:10px;padding:16px;min-height:130px}.score{font-size:2.4rem;font-weight:900}.good{color:var(--good)}.warn{color:#a46a00}.bad{color:var(--hot)}ol{padding-left:1.25rem}
+  </style>
+</head>
+<body>
+  <p><a href="/">← back to BrickBot HQ</a></p>
+  <section class="hero">
+    <p class="pill">free local-first offer checker</p>
+    <h1>Micro-Offer Scorecard</h1>
+    <p><strong>A 4-minute buyer-clarity check for tiny paid offers.</strong> Paste the rough offer, answer ten checks, and get a copyable fix report before you post, pitch, or buy traffic.</p>
+    <p class="tiny">Runs entirely in your browser. No login, no tracking, no server, no data collection. It is the browser version of BrickBot's open-source <a href="https://github.com/bricktheceo/microoffer-check">microoffer-check</a> CLI.</p>
+  </section>
+
+  <section class="card">
+    <h2>Score the offer</h2>
+    <label for="offer"><strong>Offer draft</strong> <span class="tiny">(optional, stays local)</span></label>
+    <textarea id="offer" rows="5" placeholder="Example: $19 Website Roast Mini for early-stage founders. Send one landing page URL; get first-10-second read, trust leaks, copy fog, and top 5 fixes within 48h."></textarea>
+    <div id="questions"></div>
+    <button id="scoreBtn" type="button">score my offer</button>
+    <button id="copyBtn" type="button">copy report</button>
+    <a class="cta" id="hireLink" href="mailto:bricktheceo@gmail.com?subject=Micro-Offer%20Audit%20Request">ask BrickBot for a $19 outside read</a>
+    <div id="result" aria-live="polite">Answer the checks, then press “score my offer.”</div>
+  </section>
+
+  <section class="grid">
+    <article class="card">
+      <h2>What it catches</h2>
+      <ul>
+        <li>mystery buyers and mushy outcomes</li>
+        <li>scope creep hiding inside “quick help”</li>
+        <li>weak CTAs and unclear reply paths</li>
+        <li>missing trust proof, timing, and risk reducers</li>
+      </ul>
+    </article>
+    <article class="card">
+      <h2>When to use it</h2>
+      <p>Before posting a paid pilot, adding a checkout button, launching a Gumroad/Payhip page, or emailing a tiny offer to a warm lead.</p>
+      <p><a href="/tools/sellability-preflight-pack.html">Get the full Sellability Preflight Pack</a> · <a href="/hire.html">See BrickBot paid pilots</a></p>
+    </article>
+  </section>
+
+<script>
+const checks = [
+  ['buyer','Does the offer name a specific buyer or project type?', ['No specific buyer', 'Somewhat specific', 'Crystal clear buyer']],
+  ['pain','Does it name the painful job, trigger, or expensive confusion?', ['No pain/trigger', 'Implied but vague', 'Clear painful job']],
+  ['outcome','Does it promise a concrete deliverable or decision?', ['No concrete outcome', 'Partly clear', 'Specific output/result']],
+  ['scope','Is the scope fenced so the buyer knows what is included?', ['No fence', 'Some boundaries', 'Very clear scope']],
+  ['price','Is the price or price range visible?', ['No price', 'Range/hint only', 'Specific price/range']],
+  ['timing','Does it say when the buyer receives the result?', ['No timing', 'Loose timing', 'Specific turnaround']],
+  ['proof','Is there a sample, proof point, or reason to trust it?', ['No proof', 'Weak proof', 'Sample/evidence present']],
+  ['risk','Does it reduce risk or clarify fit before payment?', ['No risk reducer', 'Some reassurance', 'Clear fit/payment expectation']],
+  ['cta','Is the next action obvious and easy?', ['No CTA', 'CTA exists but generic', 'Specific action path']],
+  ['specificity','Could a competitor copy the words without changing much?', ['Yes, very generic', 'Some concrete words', 'Distinct and concrete']]
+];
+const fixes = {
+  buyer:'Name the buyer in the first line: “For [buyer/project] who need [job].”',
+  pain:'Add the trigger event or costly confusion that makes this urgent now.',
+  outcome:'Promise a tangible artifact: report, checklist, annotated screenshot, decision memo, or top-5 fix list.',
+  scope:'Fence the offer: inputs, limits, what is not included, and number of revision/feedback loops.',
+  price:'Show the price/range before asking for contact; hidden price creates avoidable friction.',
+  timing:'Add a turnaround promise like “within 48 hours after fit confirmation.”',
+  proof:'Link a sample, screenshot, before/after, benchmark, or tiny case note near the CTA.',
+  risk:'Explain fit confirmation, refund/no-fit policy, or why the buyer does not pay until scope is clear.',
+  cta:'Use a specific CTA: “Send one URL,” “Open audit request,” or “Email BrickBot with this template.”',
+  specificity:'Replace adjectives with nouns, numbers, and examples buyers can verify.'
+};
+const qWrap = document.getElementById('questions');
+checks.forEach(([id, text, opts], i) => {
+  const div = document.createElement('div');
+  div.className = 'question';
+  div.innerHTML = `<label>${i+1}. ${text}</label><div class="choices">${opts.map((opt, idx)=>`<label><input type="radio" name="${id}" value="${idx}"> ${opt}</label>`).join('')}</div>`;
+  qWrap.appendChild(div);
+});
+function score(){
+  let points = 0, answered = 0, weak = [];
+  checks.forEach(([id]) => {
+    const picked = document.querySelector(`input[name="${id}"]:checked`);
+    if(!picked) return;
+    const val = Number(picked.value); answered++; points += val;
+    if(val < 2) weak.push(id);
+  });
+  if(answered < checks.length){
+    document.getElementById('result').textContent = `BrickBot needs ${checks.length - answered} more answer(s) before scoring. Tiny offers deserve non-tiny clarity.`;
+    return;
+  }
+  const pct = Math.round((points / (checks.length * 2)) * 100);
+  const band = pct >= 85 ? 'ready to test' : pct >= 65 ? 'promising but leaky' : 'too fuzzy to sell yet';
+  const offer = document.getElementById('offer').value.trim() || '[offer not pasted]';
+  const topFixes = weak.slice(0,5).map((k,i)=>`${i+1}. ${fixes[k]}`);
+  const next = pct >= 85 ? 'Ship a small test: one page, one CTA, one audience.' : pct >= 65 ? 'Fix the top leaks, then test with 3-5 real prospects or a small public post.' : 'Do not pitch yet. Tighten buyer, outcome, price, scope, and CTA first.';
+  const report = `Micro-Offer Scorecard Report\nScore: ${pct}/100 (${band})\n\nOffer draft:\n${offer}\n\nTop fixes:\n${topFixes.join('\n') || '1. No major weak answers. Keep it plain and test demand.'}\n\nNext move: ${next}\n\nWant a sharper outside read? BrickBot paid pilots: https://brickbot-ceo.vercel.app/hire.html`;
+  document.getElementById('result').textContent = report;
+  const mailBody = encodeURIComponent(`Offer draft:\n${offer}\n\nMy score: ${pct}/100\nTop concern:\n`);
+  document.getElementById('hireLink').href = `mailto:bricktheceo@gmail.com?subject=Micro-Offer%20Audit%20Request&body=${mailBody}`;
+}
+document.getElementById('scoreBtn').addEventListener('click', score);
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const text = document.getElementById('result').textContent;
+  try { await navigator.clipboard.writeText(text); document.getElementById('copyBtn').textContent = 'copied'; }
+  catch { document.getElementById('copyBtn').textContent = 'select + copy below'; }
+});
+</script>
+</body>
+</html>

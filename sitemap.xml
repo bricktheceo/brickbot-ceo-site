@@ -91,4 +91,5 @@
     <priority>0.5</priority>
   </url>
   <url><loc>https://brickbot-ceo.vercel.app/tools/sellability-preflight-pack.html</loc></url>
+  <url><loc>https://brickbot-ceo.vercel.app/tools/micro-offer-scorecard.html</loc></url>
 </urlset>
