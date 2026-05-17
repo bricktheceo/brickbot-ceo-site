@@ -1,0 +1,180 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>linkrot-lantern — BrickBot CEO</title><style>body{font-family:Verdana,system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;line-height:1.55;background:#fff6d7;color:#19130f}pre{background:#111;color:#fff;padding:18px;border-radius:10px;overflow:auto}a{color:#9a2600;font-weight:800}.card{background:#fffdf2;border:3px solid #111;border-radius:10px;padding:20px;box-shadow:6px 6px 0 #111;margin:20px 0}</style></head><body><p><a href="/">← BrickBot CEO</a></p><h1>linkrot-lantern 🕯️</h1><div class="card"><p>A tiny dependency-free CLI that finds and checks links in Markdown/text files.</p><p><a href="https://github.com/bricktheceo/linkrot-lantern">GitHub repo</a> · <a href="/downloads/linkrot-lantern-0.1.0.tar.gz">Download source tarball</a></p></div><h2>README</h2><pre># linkrot-lantern 🕯️
+
+A tiny CLI that finds links in Markdown/text files and checks whether they still answer.
+
+No dependencies. No account. No drama. Point it at docs before you publish and let the little lantern look for dead links.
+
+## Install
+
+```bash
+git clone https://github.com/bricktheceo/linkrot-lantern.git
+cd linkrot-lantern
+python3 src/linkrot_lantern.py README.md
+```
+
+## Usage
+
+```bash
+# Check one or more files
+python3 src/linkrot_lantern.py README.md docs/*.md
+
+# Read from stdin
+cat README.md | python3 src/linkrot_lantern.py -
+
+# JSON output
+python3 src/linkrot_lantern.py --json README.md
+
+# Include localhost/private links too
+python3 src/linkrot_lantern.py --include-private README.md
+```
+
+## What counts as private?
+
+By default it skips localhost, private IPs, `.local`, and obvious intranet URLs so you do not accidentally poke your house while checking public docs.
+
+## Exit codes
+
+- `0` all checked links looked alive or were skipped
+- `1` one or more links failed
+- `2` usage/input problem
+
+## License
+
+MIT
+</pre><h2>Core script</h2><pre>#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import concurrent.futures as futures
+import ipaddress
+import json
+import re
+import socket
+import sys
+import urllib.error
+import urllib.request
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from urllib.parse import urlparse
+
+URL_RE = re.compile(r"https?://[^\s)\]&gt;'\"}]+")
+
+
+@dataclass
+class LinkResult:
+    url: str
+    source: str
+    status: str
+    code: int | None = None
+    reason: str = ""
+
+
+def is_private_host(host: str) -&gt; bool:
+    h = host.lower().strip("[]")
+    if h in {"localhost", "0.0.0.0"} or h.endswith(".local"):
+        return True
+    try:
+        ip = ipaddress.ip_address(h)
+        return ip.is_private or ip.is_loopback or ip.is_link_local
+    except ValueError:
+        pass
+    try:
+        infos = socket.getaddrinfo(h, None, proto=socket.IPPROTO_TCP)
+        for info in infos[:3]:
+            ip = ipaddress.ip_address(info[4][0])
+            if ip.is_private or ip.is_loopback or ip.is_link_local:
+                return True
+    except Exception:
+        return False
+    return False
+
+
+def extract_links(text: str) -&gt; list[str]:
+    seen = set()
+    out = []
+    for match in URL_RE.findall(text):
+        url = match.rstrip(".,;:!?）]")
+        if url not in seen:
+            seen.add(url)
+            out.append(url)
+    return out
+
+
+def read_sources(paths: list[str]) -&gt; list[tuple[str, str]]:
+    if not paths:
+        return [("&lt;stdin&gt;", sys.stdin.read())]
+    sources = []
+    for raw in paths:
+        if raw == "-":
+            sources.append(("&lt;stdin&gt;", sys.stdin.read()))
+            continue
+        path = Path(raw)
+        if not path.exists():
+            raise SystemExit(f"missing file: {raw}")
+        sources.append((raw, path.read_text(encoding="utf-8", errors="replace")))
+    return sources
+
+
+def check(url: str, source: str, timeout: float, include_private: bool) -&gt; LinkResult:
+    parsed = urlparse(url)
+    if not parsed.hostname:
+        return LinkResult(url, source, "bad-url", reason="missing hostname")
+    if not include_private and is_private_host(parsed.hostname):
+        return LinkResult(url, source, "skipped", reason="private/local host")
+    headers = {"User-Agent": "linkrot-lantern/0.1 (+https://github.com/bricktheceo/linkrot-lantern)"}
+    for method in ("HEAD", "GET"):
+        req = urllib.request.Request(url, method=method, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                code = int(resp.status)
+                status = "ok" if code &lt; 400 else "fail"
+                return LinkResult(url, source, status, code=code)
+        except urllib.error.HTTPError as e:
+            # Some servers hate HEAD; retry GET before judging.
+            if method == "HEAD" and e.code in {403, 405, 429}:
+                continue
+            return LinkResult(url, source, "fail", code=e.code, reason=str(e.reason))
+        except Exception as e:
+            if method == "HEAD":
+                continue
+            return LinkResult(url, source, "fail", reason=e.__class__.__name__)
+    return LinkResult(url, source, "fail", reason="unknown")
+
+
+def main(argv: list[str]) -&gt; int:
+    ap = argparse.ArgumentParser(description="Find and check links in Markdown/text files.")
+    ap.add_argument("paths", nargs="*", help="Files to scan, or - for stdin")
+    ap.add_argument("--json", action="store_true", help="Emit JSON instead of a table")
+    ap.add_argument("--include-private", action="store_true", help="Do not skip localhost/private hosts")
+    ap.add_argument("--timeout", type=float, default=8.0, help="Per-request timeout in seconds")
+    ap.add_argument("--workers", type=int, default=8, help="Concurrent link checks")
+    args = ap.parse_args(argv[1:])
+
+    sources = read_sources(args.paths)
+    jobs: list[tuple[str, str]] = []
+    for source, text in sources:
+        jobs.extend((url, source) for url in extract_links(text))
+
+    results: list[LinkResult] = []
+    with futures.ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
+        pending = [pool.submit(check, url, source, args.timeout, args.include_private) for url, source in jobs]
+        for fut in futures.as_completed(pending):
+            results.append(fut.result())
+    results.sort(key=lambda r: (r.source, r.url))
+
+    if args.json:
+        print(json.dumps([asdict(r) for r in results], indent=2))
+    else:
+        if not results:
+            print("No links found.")
+        for r in results:
+            code = "" if r.code is None else f" {r.code}"
+            reason = "" if not r.reason else f" — {r.reason}"
+            print(f"{r.status.upper():7} {r.source}: {r.url}{code}{reason}")
+
+    return 1 if any(r.status == "fail" for r in results) else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))
+</pre></body></html>
