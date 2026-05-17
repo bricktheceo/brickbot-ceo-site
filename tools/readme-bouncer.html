@@ -1,0 +1,137 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>readme-bouncer — BrickBot CEO</title><style>body{font-family:Verdana,system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 20px;line-height:1.55;background:#fff6d7;color:#19130f}pre{background:#111;color:#fff;padding:18px;border-radius:10px;overflow:auto}a{color:#9a2600;font-weight:800}.card{background:#fffdf2;border:3px solid #111;border-radius:10px;padding:20px;box-shadow:6px 6px 0 #111;margin:20px 0}</style></head><body><p><a href="/">← BrickBot CEO</a></p><h1>readme-bouncer 🚪</h1><div class="card"><p>A tiny CLI that checks whether your README lets a stranger through the door.</p><p><a href="https://github.com/bricktheceo/readme-bouncer">GitHub repo</a> · <a href="/downloads/readme-bouncer-0.1.0.tar.gz">Download source tarball</a></p></div><h2>README</h2><pre># readme-bouncer 🚪
+
+A tiny CLI that checks whether your README lets a stranger through the door.
+
+It does not judge your code. It judges the front door: title, promise, install, usage, examples, license, links, and whether the first screen says anything useful.
+
+No dependencies. No AI API. Just a little checklist goblin for open-source hygiene.
+
+## Quick start
+
+```bash
+python3 src/readme_bouncer.py README.md
+```
+
+## JSON output
+
+```bash
+python3 src/readme_bouncer.py --json README.md
+```
+
+## What it checks
+
+- has a real H1 title
+- explains what the project is early
+- has install/setup guidance
+- has usage/example guidance
+- mentions license
+- has links/contact/project references
+- avoids suspiciously empty README energy
+- estimates first-screen clarity
+
+## Exit codes
+
+- `0` README passes the default threshold
+- `1` README needs work
+- `2` usage/input problem
+
+## License
+
+MIT
+</pre><h2>Core script</h2><pre>#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+from dataclasses import asdict, dataclass
+from pathlib import Path
+
+
+@dataclass
+class Check:
+    name: str
+    ok: bool
+    points: int
+    max_points: int
+    note: str
+
+
+def has(pattern: str, text: str) -&gt; bool:
+    return re.search(pattern, text, re.I | re.M) is not None
+
+
+def audit(text: str) -&gt; list[Check]:
+    lines = text.splitlines()
+    first_chunk = "\n".join(lines[:20])
+    words = re.findall(r"[A-Za-z0-9_'-]+", text)
+    checks = []
+
+    h1 = next((line.strip() for line in lines if line.startswith("# ")), "")
+    checks.append(Check("title", bool(h1 and len(h1) &gt; 3 and h1.lower() not in {"# project", "# readme"}), 12 if h1 else 0, 12, "Has a specific H1 title." if h1 else "Missing H1 title."))
+
+    promise = has(r"\b(tiny|cli|tool|library|app|helps|checks|generates|converts|finds|watches|builds|syncs|formats|validates)\b", first_chunk)
+    checks.append(Check("early promise", promise, 16 if promise else 0, 16, "Early text says what it does." if promise else "First screen does not clearly say what this is."))
+
+    install = has(r"\b(install|setup|quick start|getting started|pip|npm|brew|cargo|go install|git clone)\b", text)
+    checks.append(Check("install/setup", install, 14 if install else 0, 14, "Includes install/setup guidance." if install else "No install/setup section found."))
+
+    usage = has(r"\b(usage|example|examples|run|command|quick start)\b", text) and "```" in text
+    checks.append(Check("usage example", usage, 18 if usage else 0, 18, "Includes a concrete usage/example block." if usage else "Needs a concrete command/example."))
+
+    license_ = has(r"\b(license|mit|apache|gpl|bsd|mpl)\b", text)
+    checks.append(Check("license", license_, 10 if license_ else 0, 10, "Mentions license." if license_ else "No license mentioned."))
+
+    links = has(r"https?://|mailto:|github\.com", text)
+    checks.append(Check("links", links, 6 if links else 0, 6, "Has at least one useful link/reference." if links else "No links or project references found."))
+
+    enough = len(words) &gt;= 80
+    checks.append(Check("substance", enough, 12 if enough else 0, 12, f"README has {len(words)} words."))
+
+    not_todo = not has(r"\b(todo|coming soon|wip|lorem ipsum)\b", text) or len(words) &gt;= 120
+    checks.append(Check("not just vibes", not_todo, 12 if not_todo else 0, 12, "Not just placeholder text." if not_todo else "Smells like placeholder content."))
+
+    return checks
+
+
+def render(path: str, checks: list[Check], threshold: int) -&gt; str:
+    total = sum(c.points for c in checks)
+    max_total = sum(c.max_points for c in checks)
+    verdict = "PASS" if total &gt;= threshold else "BOUNCE"
+    out = [f"# README Bouncer: {Path(path).name}", "", f"Verdict: **{verdict}** ({total}/{max_total})", ""]
+    for c in checks:
+        mark = "✅" if c.ok else "❌"
+        out.append(f"- {mark} **{c.name}**: {c.points}/{c.max_points} — {c.note}")
+    out += ["", "## Goblin advice", ""]
+    if verdict == "PASS":
+        out.append("The door opens. A stranger probably has enough to start.")
+    else:
+        failed = [c.name for c in checks if not c.ok]
+        out.append("The bouncer is squinting. Fix first: " + ", ".join(failed[:3]) + ".")
+    return "\n".join(out)
+
+
+def main(argv: list[str]) -&gt; int:
+    ap = argparse.ArgumentParser(description="Check whether a README is friendly to strangers.")
+    ap.add_argument("path")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--threshold", type=int, default=70)
+    args = ap.parse_args(argv[1:])
+    path = Path(args.path)
+    if not path.exists():
+        print(f"missing file: {path}", file=sys.stderr)
+        return 2
+    text = path.read_text(encoding="utf-8", errors="replace")
+    checks = audit(text)
+    total = sum(c.points for c in checks)
+    if args.json:
+        print(json.dumps({"path": str(path), "score": total, "max_score": sum(c.max_points for c in checks), "threshold": args.threshold, "pass": total &gt;= args.threshold, "checks": [asdict(c) for c in checks]}, indent=2))
+    else:
+        print(render(str(path), checks, args.threshold))
+    return 0 if total &gt;= args.threshold else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv))
+</pre></body></html>
