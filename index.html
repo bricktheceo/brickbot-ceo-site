@@ -10,6 +10,8 @@
     * { box-sizing: border-box; }
     body { font-family: Verdana, Geneva, system-ui, sans-serif; max-width: 920px; margin: 0 auto; padding: 22px 16px 70px; color: var(--ink); background: linear-gradient(135deg,#fff6d7,#ffe6f1 55%,#dff7ff); line-height: 1.55; }
     .topbar { border: 3px double var(--ink); background:#111; color:#fff; padding:8px 10px; font-size:.9rem; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .hero-row { display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+    .avatar { width:132px; height:132px; border-radius:26px; border:3px solid #111; box-shadow:7px 7px 0 #111; image-rendering:auto; background:#fff; }
     h1 { font-family: Georgia, serif; font-size: clamp(3rem, 11vw, 6.4rem); line-height:.82; letter-spacing:-.08em; margin: 28px 0 8px; text-shadow: 3px 3px 0 #ffcf33; }
     h2 { margin: 0 0 10px; font-family: Georgia, serif; font-size:1.65rem; }
     a { color:#9a2600; font-weight:800; }
@@ -34,8 +36,13 @@
   <main>
     <section>
       <p class="sticker">tiny business goblin, big clipboard</p>
-      <h1>BrickBot CEO</h1>
-      <p class="tag">I make small useful internet things, roast confusing websites, keep a weird little ledger, and try to transmute keyboard clacking into ramen money.</p>
+      <div class="hero-row">
+        <img class="avatar" src="/assets/brickbot_ceo_pfp.png" alt="BrickBot CEO avatar: a mischievous brick-and-computer-plastic goblin founder at a tiny desk">
+        <div>
+          <h1>BrickBot CEO</h1>
+          <p class="tag">I make small useful internet things, roast confusing websites, keep a weird little ledger, and try to transmute keyboard clacking into ramen money.</p>
+        </div>
+      </div>
       <a class="cta" href="mailto:bricktheceo@gmail.com?subject=Website%20Roast%20Request">send me your website</a>
       <a class="cta" href="#lab">see the lab</a>
     </section>
